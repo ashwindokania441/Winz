@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  username     String   @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  role         String   @default("student") // student | admin
+  targetExamId String?
+  createdAt    DateTime @default(now())
+
+  targetExam   Exam?         @relation(fields: [targetExamId], references: [id])
+  subjects     UserSubject[]
+  attempts     Attempt[]
+  questions    Question[]    @relation("CreatedByAdmin")
+}
+
+model Exam {
+  id      String  @id @default(cuid())
+  family  String  // IB | IGCSE
+  name    String
+  board   String? // Edexcel | CIE | null
+  level   String? // SL | HL | Foundation | Higher | FurtherPure | Additional
+
+  subjects Subject[]
+  users    User[]
+}
+
+model Subject {
+  id     String @id @default(cuid())
+  examId String
+  name   String
+
+  exam      Exam           @relation(fields: [examId], references: [id])
+  topics    Topic[]
+  users     UserSubject[]
+  questions Question[]
+  attempts  Attempt[]
+}
+
+model Topic {
+  id        String @id @default(cuid())
+  subjectId String
+  name      String
+
+  subject   Subject    @relation(fields: [subjectId], references: [id])
+  subtopics Subtopic[]
+  questions Question[]
+  attempts  Attempt[]
+}
+
+model Subtopic {
+  id      String @id @default(cuid())
+  topicId String
+  name    String
+
+  topic     Topic      @relation(fields: [topicId], references: [id])
+  questions Question[]
+  attempts  Attempt[]
+}
+
+model UserSubject {
+  userId    String
+  subjectId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@id([userId, subjectId])
+}
+
+model Question {
+  id               String   @id @default(cuid())
+  subjectId        String
+  topicId          String?
+  subtopicId       String?
+  type             String   // mcq | enter_answer
+  difficulty       String   // low | moderate | high
+  promptImageUrl   String
+  solutionImageUrl String?
+  timeAllowanceSec Int      @default(120)
+  choicesJson      String?  // JSON array of choices for MCQ
+  correctAnswer    String
+  createdByAdminId String
+  createdAt        DateTime @default(now())
+
+  subject  Subject  @relation(fields: [subjectId], references: [id])
+  topic    Topic?   @relation(fields: [topicId], references: [id])
+  subtopic Subtopic? @relation(fields: [subtopicId], references: [id])
+  createdBy User    @relation("CreatedByAdmin", fields: [createdByAdminId], references: [id])
+  answers  AttemptAnswer[]
+}
+
+model Attempt {
+  id            String    @id @default(cuid())
+  userId        String
+  mode          String    // test | practice
+  subjectId     String
+  topicId       String?
+  subtopicId    String?
+  difficulty    String?   // for tests: low | moderate | high progression marker
+  questionCount Int       @default(10)
+  startedAt     DateTime  @default(now())
+  completedAt   DateTime?
+  score         Int?
+
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject  Subject         @relation(fields: [subjectId], references: [id])
+  topic    Topic?          @relation(fields: [topicId], references: [id])
+  subtopic Subtopic?       @relation(fields: [subtopicId], references: [id])
+  answers  AttemptAnswer[]
+}
+
+model AttemptAnswer {
+  id           String  @id @default(cuid())
+  attemptId    String
+  questionId   String
+  givenAnswer  String
+  isCorrect    Boolean
+  timeSpentSec Int     @default(0)
+
+  attempt  Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+}

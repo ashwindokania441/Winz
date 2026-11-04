@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #071a1f;
+  --ink-soft: #0e2c33;
+  --panel: rgba(12, 42, 48, 0.72);
+  --cream: #f3f0e6;
+  --cream-muted: #c9c4b4;
+  --lime: #c6f355;
+  --lime-deep: #9bcf2e;
+  --teal: #1f8a7a;
+  --coral: #ff6b4a;
+  --line: rgba(243, 240, 230, 0.14);
+  --glow: rgba(198, 243, 85, 0.18);
+  --background: var(--ink);
+  --foreground: var(--cream);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-cream: var(--cream);
+  --color-cream-muted: var(--cream-muted);
+  --color-lime: var(--lime);
+  --color-lime-deep: var(--lime-deep);
+  --color-teal: var(--teal);
+  --color-coral: var(--coral);
+  --font-display: var(--font-syne);
+  --font-sans: var(--font-figtree);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--foreground);
+  background:
+    radial-gradient(ellipse 80% 55% at 12% -10%, rgba(31, 138, 122, 0.35), transparent 55%),
+    radial-gradient(ellipse 60% 45% at 90% 10%, rgba(198, 243, 85, 0.12), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 70% 100%, rgba(255, 107, 74, 0.1), transparent 55%),
+    linear-gradient(165deg, #041114 0%, #0a242b 45%, #0c1f1a 100%);
+  background-attachment: fixed;
+  font-family: var(--font-figtree), system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--lime);
+  color: var(--ink);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.winz-grid {
+  background-image:
+    linear-gradient(rgba(243, 240, 230, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(243, 240, 230, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 20%, transparent 75%);
+}
+
+.winz-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(40px);
+  pointer-events: none;
+  animation: floaty 12s ease-in-out infinite;
+}
+
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-18px) scale(1.05);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes draw-line {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-rise {
+  animation: rise-in 0.7s ease-out both;
+}
+
+.animate-rise-delay {
+  animation: rise-in 0.8s ease-out 0.15s both;
+}
+
+.animate-rise-delay-2 {
+  animation: rise-in 0.85s ease-out 0.28s both;
+}
+
+.brand-underline {
+  transform-origin: left;
+  animation: draw-line 0.9s ease-out 0.35s both;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.35rem;
+  border-radius: 999px;
+  background: var(--lime);
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 0 0 0 var(--glow);
+}
+
+.btn-primary:hover {
+  background: #d7ff6a;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px var(--glow);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--cream);
+  font-weight: 600;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.btn-ghost:hover {
+  border-color: rgba(198, 243, 85, 0.45);
+  background: rgba(198, 243, 85, 0.06);
+}
+
+.field {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(7, 26, 31, 0.55);
+  color: var(--cream);
+  padding: 0.8rem 1rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field:focus {
+  border-color: rgba(198, 243, 85, 0.55);
+  box-shadow: 0 0 0 3px rgba(198, 243, 85, 0.12);
+}
+
+.field::placeholder {
+  color: rgba(201, 196, 180, 0.55);
+}
+
+.label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--cream-muted);
+  margin-bottom: 0.35rem;
+}
+
+.surface {
+  border: 1px solid var(--line);
+  background: linear-gradient(160deg, rgba(14, 44, 51, 0.85), rgba(8, 28, 32, 0.75));
+  backdrop-filter: blur(10px);
+  border-radius: 22px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  color: var(--cream-muted);
+}
